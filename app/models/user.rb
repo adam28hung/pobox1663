@@ -1,5 +1,12 @@
 class User < ActiveRecord::Base
+
   has_many :posts
+  has_many :followships, foreign_key: 'follower_id', class_name:  'Relationship'
+  has_many :followed_users, through: :followships, source: :followed
+
+  has_many :fanships, foreign_key: 'followed_id', class_name:  'Relationship'
+  has_many :fans, through: :fanships, source: :follower
+
   has_attached_file :avatar \
   , styles: { medium: "300x300>", thumb: "100x100>" } \
   , default_url: "/images/:style/missing.png" \

@@ -61,9 +61,27 @@ RSpec.describe User, type: :model do
   end
 
   context "association" do
+
     it "has many posts" do
       expect(user).to have_many(:posts)
     end
+
+    it "has many followships" do
+      expect(user).to have_many(:followships)
+    end
+
+    it "has many followed_users" do
+      expect(user).to have_many(:followed_users)
+    end
+
+    it "has many fanships" do
+      expect(user).to have_many(:fanships)
+    end
+
+    it "has many fans" do
+      expect(user).to have_many(:fans)
+    end
+
   end
 
 end

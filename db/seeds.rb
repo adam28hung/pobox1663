@@ -1,7 +1,11 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
+User.delete_all
+
+chicago = User.create({ token: 'chicago', nickname: 'bulldog', os: 'ios' \
+  , version: '9.1.0'})
+chicago.avatar = Rack::Test::UploadedFile.new("#{Rails.root}/spec/fixtures/images/avatar.jpg", "image/jpg")
+chicago.save
+copenhagen = User.create({ token: 'copenhagen', nickname: 'red nose' \
+  , os: 'android', version: 'jellybean'})
+copenhagen.avatar = Rack::Test::UploadedFile.new("#{Rails.root}/spec/fixtures/images/avatar.jpg", "image/jpg")
+copenhagen.save
+Relationship.create follower_id: chicago.id, followed_id: copenhagen.id
