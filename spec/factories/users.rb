@@ -4,5 +4,6 @@ FactoryGirl.define do
     nickname "chicago"
     os "ios"
     version "9.1.0"
+    avatar Rack::Test::UploadedFile.new("#{Rails.root}/spec/fixtures/images/avatar.jpg", "image/jpg")
   end
 end

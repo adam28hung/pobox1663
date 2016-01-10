@@ -50,6 +50,14 @@ RSpec.describe User, type: :model do
     end
   end
 
-
+  context "avatar" do
+    it { should have_attached_file(:avatar) }
+    it { should validate_attachment_presence(:avatar) }
+    it { should validate_attachment_content_type(:avatar).
+         allowing('image/png', 'image/x-png', 'image/jpg', 'image/jpeg').
+         rejecting('text/plain', 'text/xml') }
+    it { should validate_attachment_size(:avatar).
+         less_than(10.megabytes) }
+  end
 
 end
