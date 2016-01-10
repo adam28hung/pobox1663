@@ -9,8 +9,16 @@ RSpec.describe User, type: :model do
       expect(user).to validate_presence_of :token
     end
 
+    it ':token is unique' do
+      expect(user).to validate_uniqueness_of :token
+    end
+
     it 'requires :nickname' do
       expect(user).to validate_presence_of :nickname
+    end
+
+    it ':nickname is unique' do
+      expect(user).to validate_uniqueness_of :nickname
     end
 
     it 'requires :os' do
@@ -41,5 +49,7 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
   end
+
+
 
 end
