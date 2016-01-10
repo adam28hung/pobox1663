@@ -60,4 +60,10 @@ RSpec.describe User, type: :model do
          less_than(10.megabytes) }
   end
 
+  context "association" do
+    it "has many posts" do
+      expect(user).to have_many(:posts)
+    end
+  end
+
 end
