@@ -164,9 +164,78 @@ RSpec.describe V1::Checkin, type: :request do
           expect(response.body).to eq([].to_json)
         end
       end
-
-
     end
+
+    describe "GET /api/v1/posts/inradius" do
+      context "can list nearby check-in records(posts) base on user location" do
+
+        it "has posts nearby in range 1km" do
+          user1 = FactoryGirl.create(:user)
+          Post.create({message: '逛夜市', site_name:'六合夜市' \
+                     , lat:22.6320758, lng:120.296966, user_id: user1.id})
+          expect_response = Post.create({message: '逛大街' \
+                            , site_name:'統一阪急百貨' \
+                            , lat:25.0371655, lng:121.5596045 \
+                            , user_id: user1.id})
+
+
+          params = { lat: 25.0333646, lng: 121.5637253 \
+                     , device_token: user1.device_token, radius: 1}
+
+          get "/api/v1/posts/inradius", params
+          expect(response.status).to eq(200)
+          expect(response.body).to eq([expect_response].to_json)
+        end
+
+        it "has posts nearby in range 5km" do
+          user1 = FactoryGirl.create(:user)
+          Post.create({message: '逛夜市', site_name:'六合夜市' \
+                     , lat:22.6320758, lng:120.296966, user_id: user1.id})
+          expect_response = Post.create([{message: '逛大街' \
+                            , site_name:'統一阪急百貨' \
+                            , lat:25.0371655, lng:121.5596045 \
+                            , user_id: user1.id} \
+                            ,{message: '吃咖哩', site_name:'寅樂屋咖啡咖哩小食堂' \
+                            , lat:25.0371655, lng:121.5596045, user_id: user1.id}])
+          params = { lat: 25.0333646, lng: 121.5637253 \
+                     , device_token: user1.device_token, radius: 5}
+
+          get "/api/v1/posts/inradius", params
+          expect(response.status).to eq(200)
+          expect(response.body).to eq(expect_response.to_json)
+        end
+
+        it "has posts nearby in range 10km" do
+          user1 = FactoryGirl.create(:user)
+          Post.create({message: '逛夜市', site_name:'六合夜市' \
+                     , lat:22.6320758, lng:120.296966, user_id: user1.id})
+          expect_response = Post.create([{message: '逛大街' \
+                            , site_name:'統一阪急百貨' \
+                            , lat:25.0371655, lng:121.5596045 \
+                            , user_id: user1.id} \
+                            ,{message: '逛夜市', site_name:'樂華夜市' \
+                            , lat:25.008584, lng:121.5117573, user_id: user1.id}])
+          params = { lat: 25.0333646, lng: 121.5637253 \
+                     , device_token: user1.device_token, radius: 10}
+
+          get "/api/v1/posts/inradius", params
+          expect(response.status).to eq(200)
+          expect(response.body).to eq(expect_response.to_json)
+        end
+        it "has no posts nearby" do
+          user1 = FactoryGirl.create(:user)
+          Post.create({message: '逛夜市', site_name:'六合夜市' \
+                     , lat:22.6320758, lng:120.296966, user_id: user1.id})
+          params = { lat: 25.0333646, lng: 121.5637253 \
+                     , device_token: user1.device_token, radius: 10}
+
+          get "/api/v1/posts/inradius", params
+          expect(response.status).to eq(200)
+          expect(response.body).to eq([].to_json)
+        end
+      end
+    end
+
   end
 
 end

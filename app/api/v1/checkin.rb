@@ -131,6 +131,18 @@ module V1
         Post.within( 0.5, origin: "#{params[:lat]},#{params[:lng]}")
       end
 
+      desc "List nearby posts base on user location by given radius"
+      params do
+        requires :device_token, type: String, desc: "device token"
+        requires :lat, type: Float, values: -90.0..+90.0, desc: 'Current latitude.'
+        requires :lng, type: Float, values: -180.0..+180.0, desc: 'Current longitude.'
+        requires :radius, type: Float, default: 0.5, values: [0.5, 1.0, 5.0, 10.0], desc: 'Radius in Kms.'
+      end
+      get '/inradius'  do
+        authenticate!
+        Post.within( params[:radius].to_i, origin: "#{params[:lat]},#{params[:lng]}")
+      end
+
     end
 
   end
