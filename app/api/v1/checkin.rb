@@ -58,6 +58,38 @@ module V1
         current_user
       end
 
+      desc "Follow a user"
+      params do
+        requires :device_token, type: String, desc: "device token"
+        requires :id, type: Integer, desc: "other user id"
+      end
+      post ':device_token/follow/:id'  do
+        authenticate!
+        other_user = User.where(id: params[:id]).first
+        if other_user.present?
+          current_user.follow(other_user)
+          "Followed"
+        else
+          "Can't follow this user"
+        end
+      end
+
+      desc "Unfollow a user"
+      params do
+        requires :device_token, type: String, desc: "device token"
+        requires :id, type: Integer, desc: "other user id"
+      end
+      delete ':device_token/unfollow/:id'  do
+        authenticate!
+        other_user = User.where(id: params[:id]).first
+        if other_user.present?
+          current_user.unfollow(other_user)
+          "Unfollowed"
+        else
+          "Can't unfollow this user"
+        end
+      end
+
     end
 
   end

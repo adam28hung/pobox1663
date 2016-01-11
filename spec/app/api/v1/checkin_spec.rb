@@ -2,6 +2,14 @@ require 'rails_helper'
 
 RSpec.describe V1::Checkin, type: :request do
 
+  describe "check user is authorized" do
+    it ".authorize_user!" do
+      user = FactoryGirl.create(:user)
+      expect(User.authorize_user!(user.device_token)).to eq(user)
+      expect(User.authorize_user!('UNREGISTTOKEN')).to eq(nil)
+    end
+  end
+
   describe "POST /v1/users/regist" do
     it "creates user if token hadn't been taken" do
       user_detail = { device_token: 'ANEWTOKEN', nickname: 'test user' \
@@ -35,12 +43,6 @@ RSpec.describe V1::Checkin, type: :request do
   end
 
   describe "GET /v1/users/:device_token" do
-
-    it ".authorize_user!" do
-      user = FactoryGirl.create(:user)
-      expect(User.authorize_user!(user.device_token)).to eq(user)
-    end
-
     it "returns user info if user is registed" do
       user = FactoryGirl.create(:user)
       user.device_token = "REGISTTOKEN"
@@ -56,6 +58,47 @@ RSpec.describe V1::Checkin, type: :request do
       get "/api/v1/users/UNREGISTTOKEN"
       expect(response.status).to eq(401)
     end
+  end
+
+  describe "POST /api/v1/users/:device_token/follow/:id" do
+
+    it "can follow other user" do
+      user1 = FactoryGirl.create(:user, device_token: 'USERTOKEN1', nickname: 'user1')
+      user2 = FactoryGirl.create(:user, device_token: 'USERTOKEN2', nickname: 'user2')
+
+      post "/api/v1/users/#{user1.device_token}/follow/#{user2.id}"
+      expect(response.status).to eq(201)
+      expect(response.body).to eq("Followed".to_json)
+    end
+
+    it "can't follow a invalid user" do
+      user1 = FactoryGirl.create(:user, device_token: 'USERTOKEN1', nickname: 'user1')
+
+      post "/api/v1/users/#{user1.device_token}/follow/#{user1.id.to_i-1}"
+      expect(response.body).to eq("Can't follow this user".to_json)
+    end
+
+  end
+
+  describe "DELETE /api/v1/users/:device_token/unfollow/:id" do
+
+    it "can unfollow other user" do
+      user1 = FactoryGirl.create(:user, device_token: 'USERTOKEN1', nickname: 'user1')
+      user2 = FactoryGirl.create(:user, device_token: 'USERTOKEN2', nickname: 'user2')
+      user1.follow(user2)
+
+      delete "/api/v1/users/#{user1.device_token}/unfollow/#{user2.id}"
+      expect(response.status).to eq(200)
+      expect(response.body).to eq("Unfollowed".to_json)
+    end
+
+    it "can unfollow a invalid user" do
+      user1 = FactoryGirl.create(:user, device_token: 'USERTOKEN1', nickname: 'user1')
+
+      delete "/api/v1/users/#{user1.device_token}/unfollow/#{user1.id-1}"
+      expect(response.body).to eq("Can't unfollow this user".to_json)
+    end
+
   end
 
 end
