@@ -101,4 +101,32 @@ RSpec.describe V1::Checkin, type: :request do
 
   end
 
+  describe "GET /api/v1/users/:device_token/fans" do
+
+    it "can listing user's fans" do
+      user1 = FactoryGirl.create(:user, device_token: 'USERTOKEN1', nickname: 'user1')
+      user2 = FactoryGirl.create(:user, device_token: 'USERTOKEN2', nickname: 'user2')
+      user3 = FactoryGirl.create(:user, device_token: 'USERTOKEN3', nickname: 'user3')
+      user1.follow(user3)
+      user2.follow(user3)
+
+      get "/api/v1/users/#{user3.device_token}/fans"
+      expect(response.status).to eq(200)
+      expect(response.body).to eq([user1, user2].to_json)
+    end
+
+  end
+
+  describe "GET /api/v1/users/:device_token/followed_users" do
+    it "can listing user's followed_users" do
+      user1 = FactoryGirl.create(:user, device_token: 'USERTOKEN1', nickname: 'user1')
+      user2 = FactoryGirl.create(:user, device_token: 'USERTOKEN2', nickname: 'user2')
+      user1.follow(user2)
+
+      get "/api/v1/users/#{user1.device_token}/followed_users"
+      expect(response.status).to eq(200)
+      expect(response.body).to eq([user2].to_json)
+    end
+  end
+
 end

@@ -90,6 +90,24 @@ module V1
         end
       end
 
+      desc "List fans"
+      params do
+        requires :device_token, type: String, desc: "device token"
+      end
+      get ':device_token/fans'  do
+        authenticate!
+        current_user.fans
+      end
+
+      desc "List followed_users"
+      params do
+        requires :device_token, type: String, desc: "device token"
+      end
+      get ':device_token/followed_users'  do
+        authenticate!
+        current_user.followed_users
+      end
+
     end
 
   end
