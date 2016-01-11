@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  subject(:user) { FactoryGirl.create :user }
+  subject(:user) { FactoryGirl.create(:user, :with_post) }
 
   context "validation" do
 
@@ -80,6 +80,26 @@ RSpec.describe User, type: :model do
 
     it "has many fans" do
       expect(user).to have_many(:fans)
+    end
+  end
+
+  context "relationship" do
+    let(:user_to_follow) {FactoryGirl.create(:user)}
+
+    it "return true if user is #following? other user" do
+      user.followships.create(followed_id: user_to_follow.id)
+      expect(user.following?(user_to_follow)).to eq(true)
+    end
+
+    it "can #follow other user" do
+      user.follow(user_to_follow)
+      expect(user_to_follow.fans.first).to eq(user)
+    end
+
+    it "can #unfollow other user" do
+      user.followships.create(followed_id: user_to_follow.id)
+      user.unfollow(user_to_follow)
+      expect(user_to_follow.fans.count).to eq(0)
     end
 
   end

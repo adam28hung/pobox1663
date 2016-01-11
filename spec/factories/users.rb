@@ -1,9 +1,16 @@
 FactoryGirl.define do
   factory :user do
-    token "88aa8cee6fad993115f32cdea37da98bc0f91a4ff3bb3f610d8f5a6ecda19438"
-    nickname "chicago"
+    sequence(:token) { |n| "token #{n}"}
+    sequence(:nickname) { |n| "chicago #{n}"}
     os "ios"
     version "9.1.0"
     avatar Rack::Test::UploadedFile.new("#{Rails.root}/spec/fixtures/images/avatar.jpg", "image/jpg")
+
+    trait :with_post do
+      after(:create) do |user|
+        user.posts << create(:post)
+      end
+    end
+
   end
 end
