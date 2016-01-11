@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :user do
-    sequence(:token) { |n| "token #{n}"}
+    sequence(:device_token) { |n| "token#{n}"}
     sequence(:nickname) { |n| "chicago #{n}"}
     os "ios"
     version "9.1.0"

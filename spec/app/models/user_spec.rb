@@ -5,12 +5,12 @@ RSpec.describe User, type: :model do
 
   context "validation" do
 
-    it 'requires :token' do
-      expect(user).to validate_presence_of :token
+    it 'requires :device_token' do
+      expect(user).to validate_presence_of :device_token
     end
 
-    it ':token is unique' do
-      expect(user).to validate_uniqueness_of :token
+    it ':device_token is unique' do
+      expect(user).to validate_uniqueness_of :device_token
     end
 
     it 'requires :nickname' do
@@ -29,8 +29,8 @@ RSpec.describe User, type: :model do
       expect(user).to validate_presence_of :version
     end
 
-    it "is invalid without a token" do
-      user.token = nil
+    it "is invalid without a device_token" do
+      user.device_token = nil
       expect(user).not_to be_valid
     end
 
@@ -52,7 +52,7 @@ RSpec.describe User, type: :model do
 
   context "avatar" do
     it { should have_attached_file(:avatar) }
-    it { should validate_attachment_presence(:avatar) }
+    # it { should validate_attachment_presence(:avatar) }
     it { should validate_attachment_content_type(:avatar).
          allowing('image/png', 'image/x-png', 'image/jpg', 'image/jpeg').
          rejecting('text/plain', 'text/xml') }

@@ -13,9 +13,9 @@ class User < ActiveRecord::Base
   , path: ":rails_root/public/uploads/images/:id_:style_:fingerprint.:extension" \
   , url: "/uploads/images/:id_:style_:fingerprint.:extension"
 
-  validates_presence_of :token, :os, :version, :nickname
-  validates :token, :nickname, uniqueness: true
-  validates :avatar, attachment_presence: true
+  validates_presence_of :device_token, :os, :version, :nickname
+  validates :device_token, :nickname, uniqueness: true
+  # validates :avatar, attachment_presence: true
   validates_attachment :avatar \
   , content_type: { content_type: /^image\/(jpg|jpeg|png|x-png)$/ } \
   , size: { in: 0..10.megabytes }
@@ -35,4 +35,7 @@ class User < ActiveRecord::Base
     followed_users.include?(other_user)
   end
 
+  def self.authorize_user!(device_token)
+    User.where(device_token: device_token).first
+  end
 end

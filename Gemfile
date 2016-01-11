@@ -23,6 +23,8 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
+gem 'grape'
+gem 'hashie-forbidden_attributes'
 gem 'paperclip', '~> 4.3'
 
 group :development, :test do
