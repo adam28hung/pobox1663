@@ -71,6 +71,10 @@ GEM
     factory_girl_rails (4.5.0)
       factory_girl (~> 4.5.0)
       railties (>= 3.0.0)
+    geokit (1.10.0)
+    geokit-rails (2.1.0)
+      geokit (~> 1.5)
+      rails (>= 3.0)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     grape (0.14.0)
@@ -218,6 +222,7 @@ DEPENDENCIES
   byebug
   coffee-rails (~> 4.1.0)
   factory_girl_rails
+  geokit-rails
   grape
   hashie-forbidden_attributes
   jbuilder (~> 2.0)

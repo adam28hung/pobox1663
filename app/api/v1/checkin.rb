@@ -108,6 +108,29 @@ module V1
         current_user.followed_users
       end
 
+      desc "List user's posts"
+      params do
+        requires :device_token, type: String, desc: "device token"
+      end
+      get ':device_token/posts'  do
+        authenticate!
+        current_user.posts
+      end
+
+    end
+
+    resource :posts do
+      desc "List nearby posts base on user location by default range=0.5km"
+      params do
+        requires :device_token, type: String, desc: "device token"
+        requires :lat, type: Float, values: -90.0..+90.0, desc: 'Current latitude.'
+        requires :lng, type: Float, values: -180.0..+180.0, desc: 'Current longitude.'
+      end
+      get '/nearby'  do
+        authenticate!
+        Post.within( 0.5, origin: "#{params[:lat]},#{params[:lng]}")
+      end
+
     end
 
   end
