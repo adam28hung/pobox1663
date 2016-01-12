@@ -49,7 +49,10 @@ module Posts
       end
       post ''  do
         authenticate!
-        current_user.posts << Post.create!(params['post'])
+        post = Post.create!(params['post'])
+        current_user.posts << post
+        GeocoderJob.perform_later(post)
+        current_user.posts
       end
 
       desc "update user post"
@@ -67,6 +70,8 @@ module Posts
         authenticate!
         user_post = current_user.posts.where(id: params['id']).first
         user_post.update_attributes(params['post'])
+        GeocoderJob.perform_later(user_post)
+        user_post
       end
 
       desc "delete user post"

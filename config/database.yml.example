@@ -1,0 +1,20 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  user: ENV['db_user']
+  password: ENV['db_password']
+  pool: 5
+
+development:
+  <<: *default
+  database: pobox1663_development
+
+test:
+  <<: *default
+  database: pobox1663_test
+
+production:
+  <<: *default
+  database: pobox1663_production
+  username: pobox1663
+  password: <%= ENV['POBOX1663_DATABASE_PASSWORD'] %>

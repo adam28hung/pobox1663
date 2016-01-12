@@ -24,6 +24,7 @@ module Pobox1663
     config.active_record.raise_in_transactional_callbacks = true
     config.paths.add File.join('app', 'api'), glob: File.join('**', '*.rb')
     config.autoload_paths += Dir[Rails.root.join('app', 'api', '*')]
-
+    config.eager_load_paths += %W( #{config.root}/app/jobs )
+    config.active_job.queue_adapter = :sidekiq
   end
 end
