@@ -2,4 +2,4 @@
 
 require ::File.expand_path('../config/environment', __FILE__)
 run Rails.application
-run V1::Checkin
+run API
