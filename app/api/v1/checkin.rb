@@ -147,13 +147,11 @@ module V1
       desc "get user post"
       params do
         requires :device_token, type: String, desc: "device token"
-        requires :post, type: Hash do
-          requires :id, type: Integer, desc: "Post id"
-        end
+        requires :id, type: Integer, desc: "Post id"
       end
       get ':id'  do
         authenticate!
-        user_post = current_user.posts.where(id: params['post']['id']).first
+        user_post = current_user.posts.where(id: params['id']).first
       end
 
       desc "create user post"
@@ -174,8 +172,8 @@ module V1
       desc "update user post"
       params do
         requires :device_token, type: String, desc: "device token"
+        requires :id, type: Integer, desc: "Post id"
         requires :post, type: Hash do
-          requires :id, type: Integer, desc: "Post id"
           optional :message, type: String, desc: "message"
           optional :site_name, type: String, desc: "site_name"
           optional :lat, type: Float, values: -90.0..+90.0, desc: 'Current latitude.'
@@ -184,20 +182,18 @@ module V1
       end
       patch ':id'  do
         authenticate!
-        user_post = current_user.posts.where(id: params['post']['id']).first
+        user_post = current_user.posts.where(id: params['id']).first
         user_post.update_attributes(params['post'])
       end
 
       desc "delete user post"
       params do
         requires :device_token, type: String, desc: "device token"
-        requires :post, type: Hash do
-          requires :id, type: Integer, desc: "Post id"
-        end
+        requires :id, type: Integer, desc: "Post id"
       end
       delete ':id'  do
         authenticate!
-        user_post = current_user.posts.where(id: params['post']['id']).first
+        user_post = current_user.posts.where(id: params['id']).first
         user_post.destroy
       end
 

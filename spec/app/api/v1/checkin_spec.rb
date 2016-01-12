@@ -245,8 +245,9 @@ RSpec.describe V1::Checkin, type: :request do
         user1_post_id = user1.posts.first.id
         Post.create({message: '逛夜市', site_name:'六合夜市' \
                      , lat:22.6320758, lng:120.296966, user_id: user1.id})
-        params = { device_token: user1.device_token \
-                   , post: { id: user1_post_id } }
+        # params = { device_token: user1.device_token \
+        #            , post: { id: user1_post_id } }
+        params = { device_token: user1.device_token }
 
         get "/api/v1/posts/#{user1_post_id}", params
         expect(response.status).to eq(200)
@@ -271,7 +272,7 @@ RSpec.describe V1::Checkin, type: :request do
         user1 = FactoryGirl.create(:user, :with_post)
         user1_post_id = user1.posts.first.id
         params = { device_token: user1.device_token \
-                   , post: {id: user1_post_id, message: '吃晚餐' } }
+                   , post: { message: '吃晚餐' } }
 
         patch "/api/v1/posts/#{user1_post_id}", params
         expect(response.status).to eq(200)
@@ -285,8 +286,7 @@ RSpec.describe V1::Checkin, type: :request do
         user1_post_id = user1.posts.first.id
         expect_response = Post.create({message: '逛夜市', site_name:'六合夜市' \
                                        , lat:22.6320758, lng:120.296966, user_id: user1.id})
-        params = { device_token: user1.device_token \
-                   , post: { id: user1_post_id } }
+        params = { device_token: user1.device_token }
 
         delete "/api/v1/posts/#{user1_post_id}", params
         expect(response.status).to eq(200)
