@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Posts::APIV1, type: :request do
+  include ActiveJob::TestHelper
 
   describe "Post endpoints" do
 
@@ -131,7 +132,10 @@ RSpec.describe Posts::APIV1, type: :request do
                             , lat:24.795929, lng:120.6444043, user_id: user1.id } }
         post "/api/v1/posts", params
         expect(response.status).to eq(201)
-        expect(response.body).to eq(user1.posts.to_json)
+        expect(response.body).to eq(user1.posts.last.to_json)
+
+        clear_enqueued_jobs
+        clear_performed_jobs
       end
     end
 
@@ -145,6 +149,9 @@ RSpec.describe Posts::APIV1, type: :request do
         patch "/api/v1/posts/#{user1_post_id}", params
         expect(response.status).to eq(200)
         expect(user1.posts.first.message).to eq('吃晚餐')
+
+        clear_enqueued_jobs
+        clear_performed_jobs
       end
     end
 

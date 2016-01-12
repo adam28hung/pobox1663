@@ -1,6 +1,9 @@
 module Posts
   class APIV1 < API
     version 'v1', using: :path
+    before do
+      authenticate!
+    end
 
     resource :posts do
 
@@ -11,7 +14,6 @@ module Posts
         requires :lng, type: Float, values: -180.0..+180.0, desc: 'Current longitude.'
       end
       get '/nearby'  do
-        authenticate!
         Post.within( 0.5, origin: "#{params[:lat]},#{params[:lng]}")
       end
 
@@ -23,7 +25,6 @@ module Posts
         requires :radius, type: Float, default: 0.5, values: [0.5, 1.0, 5.0, 10.0], desc: 'Radius in Kms.'
       end
       get '/inradius'  do
-        authenticate!
         Post.within( params[:radius].to_i, origin: "#{params[:lat]},#{params[:lng]}")
       end
 
@@ -33,7 +34,6 @@ module Posts
         requires :id, type: Integer, desc: "Post id"
       end
       get ':id'  do
-        authenticate!
         user_post = current_user.posts.where(id: params['id']).first
       end
 
@@ -48,11 +48,10 @@ module Posts
         end
       end
       post ''  do
-        authenticate!
-        post = Post.create!(params['post'])
-        current_user.posts << post
-        GeocoderJob.perform_later(post)
-        current_user.posts
+        user_post = Post.create!(params['post'])
+        current_user.posts << user_post
+        GeocoderJob.perform_later(user_post)
+        user_post
       end
 
       desc "update user post"
@@ -67,7 +66,6 @@ module Posts
         end
       end
       patch ':id'  do
-        authenticate!
         user_post = current_user.posts.where(id: params['id']).first
         user_post.update_attributes(params['post'])
         GeocoderJob.perform_later(user_post)
@@ -80,9 +78,9 @@ module Posts
         requires :id, type: Integer, desc: "Post id"
       end
       delete ':id'  do
-        authenticate!
         user_post = current_user.posts.where(id: params['id']).first
         user_post.destroy
+        user_post.destroyed?
       end
 
     end

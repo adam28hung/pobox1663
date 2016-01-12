@@ -26,5 +26,6 @@ module Pobox1663
     config.autoload_paths += Dir[Rails.root.join('app', 'api', '*')]
     config.eager_load_paths += %W( #{config.root}/app/jobs )
     config.active_job.queue_adapter = :sidekiq
+    config.api_only = true
   end
 end
